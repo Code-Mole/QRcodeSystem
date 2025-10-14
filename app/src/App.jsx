@@ -5,6 +5,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import Login from './pages/Login'
 import PageNotFound from './pages/PageNotFound'
 import './App.css'
+import QRcode from './pages/QRcode'
 function App() {
   return (
     
@@ -12,6 +13,7 @@ function App() {
       <Route path="/" element={<Form/>} />
       <Route path="/login" element={<Login/>} />
       <Route path="/admin" element={<AdminDashboard/>} />
+      <Route path="/qrcode" element={<QRcode/>} />
       <Route path="*" element={<PageNotFound/>} />
     </Routes>
   )
