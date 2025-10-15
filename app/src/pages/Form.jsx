@@ -98,9 +98,10 @@ function Form() {
           <img src={logo} alt="Classic Pictures" />
         </a>
         {tokenValid === false ? (
-          <p style={{ color: "red", fontSize: "25px" }}>{error} <br/>
-            Scan the card to get a Token 
-             </p>
+          <p style={{ color: "red", fontSize: "25px", align: "center" }}>
+            {error} <br />
+            Scan the card to get a Token
+          </p>
         ) : (
           <>
             <h2 style={{ marginTop: 8, color: "#333" }}>
