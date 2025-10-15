@@ -93,7 +93,7 @@ function Form() {
       <div className="logo">
         <img src={logo} alt="Classic Pictures" />
         {tokenValid === false ? (
-          <p style={{ color: "red" ,fontSize: "25px"}}>{error}</p>
+          <p style={{ color: "red", fontSize: "25px" }}>{error}</p>
         ) : (
           <>
             <h2 style={{ marginTop: 8, color: "#333" }}>
@@ -141,6 +141,7 @@ function Form() {
           </>
         )}
       </div>
+      <a href="/qrcode">click me</a>
     </div>
   );
 }
