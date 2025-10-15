@@ -4,8 +4,11 @@ function Form() {
   const [tokenValid, setTokenValid] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [name, setName] = useState("");
+  const [program, setProgram] = useState("");
+  const [contact, setContact] = useState("");
 
-  // Get token from URL
+  // Get token from URL and validate
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
@@ -14,8 +17,8 @@ function Form() {
       setError("No token provided.");
       return;
     }
-    // Validate token with backend
-    fetch("http://localhost:5000/api/token/validate", {
+
+    fetch("http://localhost:5005/api/token/validate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
@@ -34,54 +37,108 @@ function Form() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
+    setError("");
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
-    // TODO: send form data to backend if needed
-    // Invalidate token after submit
-    await fetch("http://localhost:5000/api/token/invalidate", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token }),
-    });
-    setTokenValid(false);
-    setSubmitting(false);
-    setError("Token used. Thank you!");
+
+    try {
+      // Register user with backend, include the QR token as accessCode
+      const registerRes = await fetch(
+        "http://localhost:5005/api/users/registerUser",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name, program, contact, accessCode: token }),
+        }
+      );
+
+      const registerData = await registerRes.json().catch(() => ({}));
+      if (!registerRes.ok) {
+        setError(
+          registerData.msg || registerData.message || "Failed to submit form"
+        );
+        setSubmitting(false);
+        return;
+      }
+
+      // Invalidate token after successful registration
+      const invalidateRes = await fetch(
+        "http://localhost:5005/api/token/invalidate",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token }),
+        }
+      );
+
+      if (!invalidateRes.ok) {
+        const data = await invalidateRes.json().catch(() => ({}));
+        setError(data.error || data.message || "Failed to invalidate token");
+        setSubmitting(false);
+        return;
+      }
+
+      // On success, redirect to Classic Pictures
+      window.location.href = "https://classicpictures.net/";
+    } catch (err) {
+      setError("Submission failed. Please try again.");
+      setSubmitting(false);
+    }
   };
+
+  const logo = "/logo.JPG";
 
   return (
     <div className="formCotainer">
-      <div className="message">
-        <h1>Welcome to QR Code System</h1>
+      <div className="logo">
+        <img src={logo} alt="Classic Pictures" />
         {tokenValid === false ? (
-          <p style={{ color: "red" }}>{error}</p>
+          <p style={{ color: "red" ,fontSize: "25px"}}>{error}</p>
         ) : (
-          <form className="subFormCotainer" onSubmit={handleSubmit}>
-            <input
-              className="field"
-              type="text"
-              placeholder="Enter your name here"
-              required
-            />
-            <input
-              className="field"
-              type="text"
-              placeholder="Enter your Program of study here"
-              required
-            />
-            <input
-              className="field"
-              type="text"
-              placeholder="Enter your Phone number here"
-              required
-            />
-            <button
-              className="btn"
-              type="submit"
-              disabled={submitting || tokenValid === false}
-            >
-              {submitting ? "Submitting..." : "Submit"}
-            </button>
-          </form>
+          <>
+            <h2 style={{ marginTop: 8, color: "#333" }}>
+              Welcome to Classic Pictures
+            </h2>
+            <p style={{ maxWidth: 560, margin: "8px auto", color: "#555" }}>
+              We're delighted to have you here — please complete the short form
+              below and you'll be redirected to our site when your submission is
+              successful.
+            </p>
+            {error && <p style={{ color: "red" }}>{error}</p>}
+            <form className="subFormCotainer" onSubmit={handleSubmit}>
+              <input
+                className="field"
+                type="text"
+                placeholder="Enter your name here"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+              />
+              <input
+                className="field"
+                type="text"
+                placeholder="Enter your Program of study here"
+                required
+                value={program}
+                onChange={(e) => setProgram(e.target.value)}
+              />
+              <input
+                className="field"
+                type="text"
+                placeholder="Enter your Phone number here"
+                required
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+              />
+              <button
+                className="btn"
+                type="submit"
+                disabled={submitting || tokenValid === false}
+              >
+                {submitting ? "Submitting..." : "Submit"}
+              </button>
+            </form>
+          </>
         )}
       </div>
     </div>
