@@ -11,10 +11,8 @@ dotenv.config();
 connectDB();
 server.use(
   cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? ["https://qrcode-system-frontend.onrender.com"]
-        : ["http://localhost:5173"],
+    origin: "https://qrcode-system-frontend.onrender.com",
+    methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
 );
