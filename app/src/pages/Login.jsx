@@ -13,11 +13,14 @@ function Login() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("http://localhost:5005/api/users/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
+      const res = await fetch(
+        "https://qrcode-system-backend.onrender.com/api/users/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+        }
+      );
       const data = await res.json();
       if (!res.ok) {
         setError(data.msg || data.message || "Login failed");

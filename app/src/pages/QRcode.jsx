@@ -10,7 +10,9 @@ function QRcode() {
     // Fetch a unique token from the backend
     const fetchToken = async () => {
       try {
-        const res = await fetch("http://localhost:5005/api/token");
+        const res = await fetch(
+          "https://qrcode-system-backend.onrender.com/api/token"
+        );
         const data = await res.json();
         setToken(data.token);
         const qrUrl = `${window.location.origin}/form?token=${data.token}`;

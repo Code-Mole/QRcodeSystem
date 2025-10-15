@@ -18,7 +18,7 @@ function Form() {
       return;
     }
 
-    fetch("http://localhost:5005/api/token/validate", {
+    fetch("https://qrcode-system-backend.onrender.com/api/token/validate", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token }),
@@ -44,7 +44,7 @@ function Form() {
     try {
       // Register user with backend, include the QR token as accessCode
       const registerRes = await fetch(
-        "http://localhost:5005/api/users/registerUser",
+        "https://qrcode-system-backend.onrender.com/api/users/registerUser",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -63,7 +63,7 @@ function Form() {
 
       // Invalidate token after successful registration
       const invalidateRes = await fetch(
-        "http://localhost:5005/api/token/invalidate",
+        "https://qrcode-system-backend.onrender.com/api/token/invalidate",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -25,7 +25,9 @@ function AdminDashboard() {
   };
 
   const fetchUsers = async () => {
-    const res = await fetch("http://localhost:5005/api/users");
+    const res = await fetch(
+      "https://qrcode-system-backend.onrender.com/api/users"
+    );
     const data = await res.json();
     setUsers(data);
   };
@@ -72,7 +74,7 @@ function AdminDashboard() {
   };
 
   const handleUpdate = async (id) => {
-    await fetch(`http://localhost:5005/api/users/${id}`, {
+    await fetch(`https://qrcode-system-backend.onrender.com/api/users/${id}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(editForm),
@@ -82,7 +84,7 @@ function AdminDashboard() {
   };
 
   const handleDelete = async (id) => {
-    await fetch(`http://localhost:5005/api/users/${id}`, {
+    await fetch(`https://qrcode-system-backend.onrender.com/api/users/${id}`, {
       method: "DELETE",
     });
     fetchUsers();
