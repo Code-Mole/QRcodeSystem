@@ -15,8 +15,8 @@ function QRcode() {
         );
         const data = await res.json();
         setToken(data.token);
-  // point to app root which renders the Form component
-  const qrUrl = `${window.location.origin}/?token=${data.token}`;
+        // point to app root which renders the Form component
+        const qrUrl = `${window.location.origin}/?token=${data.token}`;
         // Generate QR code data URL using qrcode
         QRCode.toDataURL(qrUrl, { width: 256 }, (err, url) => {
           if (err) {
