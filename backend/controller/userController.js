@@ -3,43 +3,46 @@ import AdminModel from "../model//adminModel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-const registerUser =async (req,res)=>{
+const registerUser = async (req, res) => {
   try {
-     const { name, program, contact, accessCode } = req.body;
+    const { name, program, contact } = req.body;
+    // The unique code from QR (token) should be in req.body.accessCode
+    const accessCode = req.body.accessCode;
 
-     // Basic validation
-     if (!name || !program || !contact || !accessCode) {
-       return res.status(400).json({ msg: "Please enter all fields" });
-     }
+    // Basic validation
+    if (!name || !program || !contact || !accessCode) {
+      return res.status(400).json({ msg: "Please enter all fields" });
+    }
 
-     const newUser = await userModel({ name, program, contact, accessCode });
-     newUser.save().then((user) => res.json(user));
-}catch (error) {
+    // Store the unique code in accessCode field
+    const newUser = new userModel({ name, program, contact, accessCode });
+    await newUser.save();
+    res.json(newUser);
+  } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
-}
-const registerAdmin = async(req, res) => {
+};
+const registerAdmin = async (req, res) => {
   try {
-    const { name, email, password } = req.body; 
+    const { name, email, password } = req.body;
     if (!name || !email || !password) {
       return res.status(400).json({ msg: "Please enter all fields" });
     }
-      // Check for existing admin
-      const existingAdmin = await AdminModel.findOne({ email });
-      if (existingAdmin) {
-        return res.status(400).json({ msg: "Admin already exist" });
-      }
-      // hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
-      const newAdmin = new AdminModel({ name, email, password: hashedPassword });
-      await newAdmin.save();
-      res.status(201).json(newAdmin);
-    } catch (error) {
-      res.status(500).json({ message: "Server Error", error: error.message });
+    // Check for existing admin
+    const existingAdmin = await AdminModel.findOne({ email });
+    if (existingAdmin) {
+      return res.status(400).json({ msg: "Admin already exist" });
     }
-    
-}
-const AdminLogin = async(req,res)=>{
+    // hash password
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const newAdmin = new AdminModel({ name, email, password: hashedPassword });
+    await newAdmin.save();
+    res.status(201).json(newAdmin);
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error: error.message });
+  }
+};
+const AdminLogin = async (req, res) => {
   // Authenticate Admin
   const { email, password } = req.body;
   if (!email || !password) {
@@ -55,64 +58,60 @@ const AdminLogin = async(req,res)=>{
     if (!isMatch) {
       return res.status(400).json({ msg: "Invalid credentials" });
     }
-    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, { expiresIn: 3600  });
+    const token = jwt.sign({ id: admin._id }, process.env.JWT_SECRET, {
+      expiresIn: 3600,
+    });
     res.json({
-      token, admin:
-      { id: admin._id, name: admin.name, email: admin.email }
+      token,
+      admin: { id: admin._id, name: admin.name, email: admin.email },
     });
     // login user
-
-
-  }catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
-}
+};
 
-const getAllUsers = async(req,res)=>{
+const getAllUsers = async (req, res) => {
   //get all users
   try {
-    const users =await userModel.find();
+    const users = await userModel.find();
     res.json(users);
-
-}catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
-}
-const getUserById = async (req,res)=>{
+};
+const getUserById = async (req, res) => {
   //get user by id
   try {
-    const user =await userModel.findById(req.params.id);
+    const user = await userModel.findById(req.params.id);
     res.json(user);
-
-}catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
-}
+};
 
-const updateUser =async (req,res)=>{
+const updateUser = async (req, res) => {
   //update user
   try {
-    
     const updatedUser = await userModel.findByIdAndUpdate(
       req.params.id,
       req.body,
       { new: true }
     );
     res.json(updatedUser);
-  }catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
-}
+};
 
-const deleteUser =async (req,res)=>{
+const deleteUser = async (req, res) => {
   try {
     const deletedUser = await userModel.findByIdAndDelete(req.params.id);
     res.json(deletedUser);
-  }catch (error) {
+  } catch (error) {
     res.status(500).json({ message: "Server Error", error: error.message });
   }
-
-}
+};
 
 export {
   registerUser,
