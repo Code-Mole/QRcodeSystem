@@ -91,7 +91,9 @@ function Form() {
   return (
     <div className="formCotainer">
       <div className="logo">
-        <img src={logo} alt="Classic Pictures" />
+        <a href="/login">
+          <img src={logo} alt="Classic Pictures" />
+        </a>
         {tokenValid === false ? (
           <p style={{ color: "red", fontSize: "25px" }}>{error}</p>
         ) : (
@@ -141,7 +143,6 @@ function Form() {
           </>
         )}
       </div>
-      <a href="/qrcode">click me</a>
     </div>
   );
 }
