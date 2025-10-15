@@ -78,7 +78,10 @@ function Form() {
         return;
       }
 
-      // On success, redirect to Classic Pictures
+      // Show alert and then redirect to Classic Pictures
+      alert(
+        "Submission successful! You will now be redirected to Classic Pictures. Browse around and enjoy what we do!"
+      );
       window.location.href = "https://classicpictures.net/";
     } catch (err) {
       setError("Submission failed. Please try again.");

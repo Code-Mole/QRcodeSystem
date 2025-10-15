@@ -1,3 +1,56 @@
+.formCotainer,
+.dashboard-container {
+  max-width: 100vw;
+}
+
+@media (max-width: 900px) {
+  .formCotainer,
+  .dashboard-container {
+    width: 95vw;
+    padding: 10px;
+    margin: 4% auto;
+  }
+  .subFormContainer,
+  .dashboard-table {
+    width: 100%;
+    font-size: 15px;
+  }
+  .dashboard-controls {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+}
+
+@media (max-width: 600px) {
+  .formCotainer,
+  .dashboard-container {
+    width: 100vw;
+    margin: 0;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0 2vw;
+  }
+  .subFormContainer,
+  .dashboard-table {
+    width: 100%;
+    font-size: 13px;
+  }
+  .field,
+  .btn,
+  .dashboard-search,
+  .dashboard-export,
+  .dashboard-logout,
+  .dashboard-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
+  .dashboard-controls {
+    flex-direction: column;
+    gap: 8px;
+    align-items: stretch;
+  }
+}
 .formCotainer {
   display: flex;
   flex-direction: column;
