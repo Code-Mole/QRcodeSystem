@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as XLSX from "xlsx";
 
 function AdminDashboard() {
@@ -16,6 +17,12 @@ function AdminDashboard() {
   useEffect(() => {
     fetchUsers();
   }, []);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
 
   const fetchUsers = async () => {
     const res = await fetch("http://localhost:5005/api/users");
@@ -99,9 +106,14 @@ function AdminDashboard() {
           onChange={handleSearch}
           className="dashboard-search"
         />
-        <button className="dashboard-export" onClick={handleExport}>
-          Export to Excel
-        </button>
+        <div style={{ display: "flex", gap: 8 }}>
+          <button className="dashboard-export" onClick={handleExport}>
+            Export to Excel
+          </button>
+          <button className="dashboard-logout" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
       </div>
       <table className="dashboard-table">
         <thead>
