@@ -1,6 +1,15 @@
 // backend/model/token.js
-// Simple in-memory token store for demo. Replace with DB for production.
-const tokens = new Map();
+// Persist tokens in MongoDB so they remain valid until used.
+import mongoose from "mongoose";
+
+const tokenSchema = new mongoose.Schema({
+  token: { type: String, required: true, unique: true, index: true },
+  valid: { type: Boolean, default: true },
+  createdAt: { type: Date, default: Date.now },
+});
+
+const TokenModel =
+  mongoose.models.Token || mongoose.model("Token", tokenSchema);
 
 function generateToken() {
   // Generate a random unicode string (base64 for simplicity)
@@ -9,25 +18,26 @@ function generateToken() {
   );
 }
 
-function createToken() {
+async function createToken() {
   const token = generateToken();
-  tokens.set(token, { valid: true, created: Date.now() });
-  return token;
-}
-
-function validateToken(token) {
-  const entry = tokens.get(token);
-  return entry && entry.valid;
-}
-
-function invalidateToken(token) {
-  if (tokens.has(token)) {
-    tokens.get(token).valid = false;
+  try {
+    await TokenModel.create({ token });
+    return token;
+  } catch (err) {
+    // In the rare case of collision, try again
+    return createToken();
   }
 }
 
-export {
-  createToken,
-  validateToken,
-  invalidateToken,
-};
+async function validateToken(token) {
+  if (!token) return false;
+  const entry = await TokenModel.findOne({ token }).lean();
+  return !!entry && entry.valid === true;
+}
+
+async function invalidateToken(token) {
+  if (!token) return;
+  await TokenModel.updateOne({ token }, { $set: { valid: false } });
+}
+
+export { createToken, validateToken, invalidateToken };

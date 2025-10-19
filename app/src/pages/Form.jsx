@@ -89,13 +89,18 @@ function Form() {
     }
   };
 
-  const logo = "/logo.JPG";
+  const logo = "/frams_classic_logo_png.png";
+  const cameraGirl  = "/pngtree-young-girl-holding-a-camera-enthusiastic-photographer-png-image_15591592.png";
+
 
   return (
     <div className="formCotainer">
       <div className="logo">
         <a href="/login">
           <img src={logo} alt="Classic Pictures" />
+          <div className="girlCon">
+            <img id="girl" src={cameraGirl} alt="girl Pictures" />
+          </div>
         </a>
         {tokenValid === false ? (
           <p style={{ color: "red", fontSize: "25px", align: "center" }}>
